@@ -1,0 +1,11 @@
+D:\_aavb\WindowsApplication3\WindowsApplication3\obj\Debug\WindowsApplication3.vbproj.GenerateResource.Cache
+D:\_aavb\WindowsApplication3\WindowsApplication3\bin\Debug\Blocplan_ops.exe.config
+D:\_aavb\WindowsApplication3\WindowsApplication3\bin\Debug\Blocplan_ops.exe
+D:\_aavb\WindowsApplication3\WindowsApplication3\bin\Debug\Blocplan_ops.pdb
+D:\_aavb\WindowsApplication3\WindowsApplication3\bin\Debug\Blocplan_ops.xml
+D:\_aavb\WindowsApplication3\WindowsApplication3\obj\Debug\Blocplan_ops.formDept.resources
+D:\_aavb\WindowsApplication3\WindowsApplication3\obj\Debug\Blocplan_ops.Resources.resources
+D:\_aavb\WindowsApplication3\WindowsApplication3\obj\Debug\Blocplan_ops.exe
+D:\_aavb\WindowsApplication3\WindowsApplication3\obj\Debug\Blocplan_ops.xml
+D:\_aavb\WindowsApplication3\WindowsApplication3\obj\Debug\Blocplan_ops.pdb
+D:\_aavb\WindowsApplication3\WindowsApplication3\obj\Debug\Blocplan_ops.scoreForm.resources

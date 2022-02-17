@@ -1,0 +1,35 @@
+D:\_aavb\WindowsApplication3\WindowsApplication3\bin\Debug\Blocplan_ops.exe.config
+D:\_aavb\WindowsApplication3\WindowsApplication3\bin\Debug\Blocplan_ops.exe
+D:\_aavb\WindowsApplication3\WindowsApplication3\bin\Debug\Blocplan_ops.pdb
+D:\_aavb\WindowsApplication3\WindowsApplication3\bin\Debug\Blocplan_ops.xml
+D:\_aavb\WindowsApplication3\WindowsApplication3\obj\Debug\Blocplan_ops.formDept.resources
+D:\_aavb\WindowsApplication3\WindowsApplication3\obj\Debug\Blocplan_ops.Resources.resources
+D:\_aavb\WindowsApplication3\WindowsApplication3\obj\Debug\Blocplan_ops.scoreForm.resources
+D:\_aavb\WindowsApplication3\WindowsApplication3\obj\Debug\Blocplan_ops.vbproj.GenerateResource.Cache
+D:\_aavb\WindowsApplication3\WindowsApplication3\obj\Debug\Blocplan_ops.exe
+D:\_aavb\WindowsApplication3\WindowsApplication3\obj\Debug\Blocplan_ops.xml
+D:\_aavb\WindowsApplication3\WindowsApplication3\obj\Debug\Blocplan_ops.pdb
+D:\_aavb\WindowsApplication3\WindowsApplication3\obj\Debug\Blocplan_ops.vbprojResolveAssemblyReference.cache
+D:\_aavb\WindowsApplication3\WindowsApplication3\obj\Debug\Blocplan_ops.vectorValueForm.resources
+D:\_aavb\Blocplan_ops\WindowsApplication3\bin\Debug\Blocplan_ops.exe.config
+D:\_aavb\Blocplan_ops\WindowsApplication3\obj\Debug\Blocplan_ops.exe
+D:\_aavb\Blocplan_ops\WindowsApplication3\obj\Debug\Blocplan_ops.xml
+D:\_aavb\Blocplan_ops\WindowsApplication3\obj\Debug\Blocplan_ops.pdb
+D:\_aavb\Blocplan_ops\WindowsApplication3\bin\Debug\Blocplan_ops.exe
+D:\_aavb\Blocplan_ops\WindowsApplication3\bin\Debug\Blocplan_ops.pdb
+D:\_aavb\Blocplan_ops\WindowsApplication3\bin\Debug\Blocplan_ops.xml
+D:\_aavb\Blocplan_ops\WindowsApplication3\obj\Debug\Blocplan_ops.vbprojResolveAssemblyReference.cache
+D:\_aavb\Blocplan_ops\WindowsApplication3\obj\Debug\Blocplan_ops.formDept.resources
+D:\_aavb\Blocplan_ops\WindowsApplication3\obj\Debug\Blocplan_ops.Resources.resources
+D:\_aavb\Blocplan_ops\WindowsApplication3\obj\Debug\Blocplan_ops.scoreForm.resources
+D:\_aavb\Blocplan_ops\WindowsApplication3\obj\Debug\Blocplan_ops.vectorValueForm.resources
+D:\_aavb\Blocplan_ops\WindowsApplication3\obj\Debug\Blocplan_ops.vbproj.GenerateResource.Cache
+D:\_aavb\Blocplan_ops\WindowsApplication3\obj\Debug\Blocplan_ops.vectorScore.resources
+D:\_aavb\Blocplan_ops\WindowsApplication3\obj\Debug\Blocplan_ops.vectorValue.resources
+D:\_aavb\Blocplan_ops\WindowsApplication3\obj\Debug\Blocplan_ops.productForm.resources
+D:\_aavb\Blocplan_ops\WindowsApplication3\obj\Debug\Blocplan_ops.layoutForm.resources
+D:\_aavb\Blocplan_ops\WindowsApplication3\obj\Debug\Blocplan_ops.ratioForm.resources
+E:\Daus\S2 Bismillaah\IE550 Facilities Analysis & Design\Burn\Project\Program\Blocplan_ops\WindowsApplication3\bin\Debug\Blocplan_ops.exe.config
+E:\Daus\S2 Bismillaah\IE550 Facilities Analysis & Design\Burn\Project\Program\Blocplan_ops\WindowsApplication3\obj\Debug\Blocplan_ops.exe
+E:\Daus\S2 Bismillaah\IE550 Facilities Analysis & Design\Burn\Project\Program\Blocplan_ops\WindowsApplication3\obj\Debug\Blocplan_ops.xml
+E:\Daus\S2 Bismillaah\IE550 Facilities Analysis & Design\Burn\Project\Program\Blocplan_ops\WindowsApplication3\obj\Debug\Blocplan_ops.pdb

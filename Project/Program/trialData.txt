@@ -1,0 +1,6 @@
+﻿dept:1,2,3,4
+area:5,4,3,4
+vector:10,2,0,5,5,2
+bay:2,1,1
+deptIndex:3,2,1,4
+ratio:1,35/1
