@@ -24,8 +24,8 @@ Public Class DepartmentManager
             End If
         Next
 
-        If count > 1 Then
-            stddev = Math.Sqrt((totalSquare - (total * total / count)) / (count -1))
+        If count > 0 Then
+            stddev = Math.Sqrt((totalSquare - (total * total / count)) / count)
         Else
             stddev = 0
         End If
