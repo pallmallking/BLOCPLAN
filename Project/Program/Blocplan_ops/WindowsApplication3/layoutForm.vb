@@ -1,4 +1,6 @@
-﻿Public Class layoutForm
+Imports BlocplanLogic
+
+Public Class layoutForm
     Shared allArea, wide, wid(3), wi(18), len(18), h(4), v(18), x(18, 2), y(18, 2), area(18), myWidth, myHeight As Single
     Dim ratioX, ratioY, tmp As Single : Dim calib As Integer = 30 : Dim marg_l As Integer = 150 : Dim marg_b As Integer = 150
     Dim center(18), scorePoint As Point : Dim dept(18) As String
@@ -18,7 +20,8 @@
     Dim saveLayoutDialog As New SaveFileDialog : Dim openLayoutDialog As New OpenFileDialog
     Dim department(), areawide(), vector(), bay(), deptIndex(), ratio() As String
 
-
+    Private layoutCalculator As New LayoutCalculator()
+    Private layoutFileManager As New LayoutFileManager()
 
     Private Sub layoutForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         depIdx = 0
@@ -159,187 +162,39 @@
         Next
     End Sub
     Sub count_layout()
-        Me.Size = New Size(myRect.Width + marg_l + 280, myRect.Height + marg_b + 100)
-        myRect.X = 0
-        myRect.Y = 0
-        wide = 0
-        For k = 1 To depNo
-            wide += area(ind(k))
-            'MessageBox.Show(area(k))
-        Next
-        calib = 540 / Math.Sqrt(wide)
-        myWidth = Math.Sqrt((CSng(ratioForm.ratioX) / CSng(ratioForm.ratioY)) * wide)
-        myHeight = Math.Sqrt((CSng(ratioForm.ratioY) / CSng(ratioForm.ratioX)) * wide)
-        myRect.Width = myWidth * calib
-        myRect.Height = myHeight * calib
-        layoutPanel.Size = New Size(myRect.Width + 10, myRect.Height + 10)
-        layoutPanel.Location = New Point(Me.Width - myRect.Width - 30, 30)
-        layoutPanel.BackColor = Color.Aqua
-        genBut.Location = New Point(Me.Width - 120, myRect.Height + 60)
-        changeBut.Location = New Point(Me.Width - 220, myRect.Height + 60)
-        autoBut.Location = New Point(Me.Width - 340, myRect.Height + 60)
-        saveBut.Location = New Point(Me.Width - 450, myRect.Height + 60)
-        openBut.Location = New Point(Me.Width - 530, myRect.Height + 60)
-        index = 1
-        'loop to count area wide
-        wid(1) = 0 : wid(2) = 0 : wid(3) = 0
-        For k = 1 To c1
-            wid(1) += area(ind(index))
-            index += 1
-        Next
-        For l = 1 To c2
-            wid(2) += area(ind(index))
-            index += 1
-        Next
-        For m = 1 To c3
-            wid(3) += area(ind(index))
-            index += 1
-        Next
-        'loop to count area lenght
-        wid(1) = Math.Round(wid(1) / myWidth, 3) : wid(2) = Math.Round(wid(2) / myWidth, 3) : wid(3) = Math.Round(wid(3) / myWidth, 3)
-        index = 1
-        For k = 1 To c1
-            len(ind(index)) = area(ind(index)) / wid(1)
-            wi(ind(index)) = wid(1)
-            index += 1
-        Next
-        For l = 1 To c2
-            len(ind(index)) = area(ind(index)) / wid(2)
-            wi(ind(index)) = wid(2)
-            index += 1
-        Next
-        For m = 1 To c3
-            len(ind(index)) = area(ind(index)) / wid(3)
-            wi(ind(index)) = wid(3)
-            index += 1
-        Next
-        'loop to count x1,y1 and x2,y2 of area position
-        x(1, 1) = 0 : y(1, 1) = 0
-        index = 1
-        For k = 1 To c1
-            If k = 1 Then
-                x(index, 1) = x(1, 1)
-                y(index, 1) = y(1, 1)
-            Else
-                x(index, 1) = x(index - 1, 2)
-                y(index, 1) = y(index - 1, 1)
-            End If
-            x(index, 2) = x(index, 1) + len(ind(index)) * calib
-            y(index, 2) = y(index, 1) + wid(1) * calib
-            index += 1
-        Next
-        For l = 1 To c2
-            If l = 1 Then
-                x(index, 1) = x(1, 1)
-                y(index, 1) = y(1, 1) + wid(1) * calib
-            Else
-                x(index, 1) = x(index - 1, 2)
-                y(index, 1) = y(1, 1) + wid(1) * calib
-            End If
-            x(index, 2) = x(index, 1) + len(ind(index)) * calib
-            y(index, 2) = y(index, 1) + wid(2) * calib
-            index += 1
-        Next
-        For m = 1 To c3
-            If m = 1 Then
-                x(index, 1) = x(1, 1)
-                y(index, 1) = y(1, 1) + (wid(1) + wid(2)) * calib
-            Else
-                x(index, 1) = x(index - 1, 2)
-                y(index, 1) = y(1, 1) + (wid(1) + wid(2)) * calib
-            End If
-            x(index, 2) = x(index, 1) + len(ind(index)) * calib
-            y(index, 2) = y(index, 1) + wid(3) * calib
-            index += 1
-        Next
-        'Dept Name
-        Dim font As Font = Me.Font
+        Dim areaList As New List(Of Single)
         For i = 1 To depNo
-            center(i) = New Point(x(i, 1) + (x(i, 2) - x(i, 1)) / 2, y(i, 1) + (y(i, 2) - y(i, 1)) / 2)
-            ctx(i) = center(i).X / calib
-            cty(i) = center(i).Y / calib
-            L_W(i) = CSng(len(ind(i)) / wi(ind(i)))
-            lblCtx(i).Text = ctx(i)
-            lblCty(i).Text = cty(i)
-            dep(i).Text = dept(ind(i))
-            lblWidth(i).Text = len(ind(i))
-            lblLength(i).Text = wi(ind(i))
-            lblL_W(i).Text = L_W(i)
-            lblArea(i).Text = area(ind(i))
+            areaList.Add(area(i))
         Next
-        ''Search for relDis elements count
-        Dim count As Integer = 0
-        For n = 1 To depNo - 1
-            For m = 2 To depNo
-                If n >= m Then
-                    'nothing
-                Else
-                    count += 1
-                End If
-            Next
+
+        Dim departmentIndices As New List(Of Integer)
+        For i = 1 To depNo
+            departmentIndices.Add(ind(i))
         Next
-        ReDim distList(count - 1) : ReDim relList(count - 1)
-        'Return
-        'Counting Rel-Dist Value
-        'txtTest.Text = ""
-        idx = 0
+
+        Dim scoreArray As Single(,) = New Single(depNo, depNo) {}
         For i = 1 To depNo - 1
             For j = 2 To depNo
-                If i >= j Then
-                    'nothing
-                Else
-                    'MessageBox.Show(idx)
-                    relList(idx) = score(i, j)
-                    distList(idx) = CSng(((Math.Abs(ctx(i) - ctx(j)) + Math.Abs(cty(i) - cty(j)).ToString)))
-                    'txtTest.Text &= "(" & i & "," & j & " - " & relList(idx) & "," & Math.Round(distList(idx)) & " - " & Math.Round(ctx(i), 1) & " , " & Math.Round(ctx(j), 1) & ")"
-                    'txtTest.Text &= "== " & idx & " == (" & relList(idx) & "," & Math.Round(distList(idx)) & ")"
-                    idx += 1
+                If i < j Then
+                    scoreArray(i, j) = score(i, j)
                 End If
             Next
         Next
-        uBound = 0 : lBound = 0 : relDist = 0
-        'txtAtHor.Text = "" : txtAtVer.Text = ""
-        Dim cek As String = ""
-        For i = 0 To idx - 1
-            relDist += relList(i) * distList(i)
-            'cek &= relList(i) & " x " & distList(i) & "  +  "
-            cek &= distList(i) & " - "
-        Next
-        Array.Sort(distList) : Array.Sort(relList)
-        Array.Reverse(relList)
-        cek = ""
-        For i = 0 To idx - 1
-            lBound += relList(i) * distList(i)
-            'txtAtVer.Text += "(" & relList(i) & " x " & distList(i) & ") "
-            cek &= distList(i) & " - "
-        Next
-        Array.Reverse(distList)
-        For i = 0 To idx - 1
-            uBound += relList(i) * distList(i)
-            'txtAtHor.Text += "(" & relList(i) & " x " & distList(i) & ") "
-        Next
-        rScore = 1 - (relDist - lBound) / (uBound - lBound)
+
+        Dim result As LayoutCalculator.LayoutResult = layoutCalculator.CalculateLayout(areaList, CSng(ratioForm.ratioX), CSng(ratioForm.ratioY), c1, c2, c3, departmentIndices, scoreArray)
+
+        x = result.XCoordinates
+        y = result.YCoordinates
+        center = result.Centers
+        lBound = result.LowerBound
+        uBound = result.UpperBound
+        rScore = result.RScore
     End Sub
     Sub random_layout()
-        Dim rnd As New Random
-        If depNo > 12 Then
-            c1 = rnd.Next(depNo - 12, 6)
-            If (c1 < 6) Then c2 = 6 Else c2 = rnd.Next(depNo - 12, 6)
-            c3 = depNo - c1 - c2
-        ElseIf depNo > 6 And depNo <= 12 Then
-            c1 = rnd.Next(1, 6)
-            If ((depNo - c1) >= 6) Then c2 = rnd.Next(1, 6) Else c2 = rnd.Next(1, depNo - c1)
-            c3 = depNo - c1 - c2
-        ElseIf depNo <= 6 Then
-            c1 = rnd.Next(1, depNo)
-            If (c1 = depNo) Then c2 = 0 Else c2 = rnd.Next(1, depNo - c1)
-            If ((depNo - c1 - c2) < 0) Then c3 = 0 Else c3 = depNo - c1 - c2
-        End If
-        'Variables to save bays/rows
-        ReDim Preserve bay(3)
-        bay(1) = c1
-        bay(2) = c2
-        bay(3) = c3
+        Dim result As Tuple(Of Integer, Integer, Integer) = layoutCalculator.GenerateRandomLayout(depNo)
+        c1 = result.Item1
+        c2 = result.Item2
+        c3 = result.Item3
     End Sub
     Sub generate_layout(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles genBut.Click
         change_pair()
@@ -452,119 +307,40 @@
         layoutPanel.Invalidate()
     End Sub
     Private Sub save_layout(sender As Object, e As EventArgs)
-        Dim fileText As String = lblFileName.Text
-        If fileText = "New" Then
-            saveLayoutDialog.Filter = "TXT Files (*.txt*)|*.txt"
-            If saveLayoutDialog.ShowDialog = Windows.Forms.DialogResult.OK _
-            Then
-                My.Computer.FileSystem.WriteAllText _
-                (saveLayoutDialog.FileName, theTextToSave, False)
-                lblFileName.Text = saveLayoutDialog.FileName
-            End If
-        End If
-        If System.IO.File.Exists(fileText) = True Then
-            Dim result As Integer = MessageBox.Show("Do you want to replace current file?", "Warning", MessageBoxButtons.YesNoCancel)
-            If result = DialogResult.Cancel Then
-                'nothing
-            ElseIf result = DialogResult.No Then
-                saveLayoutDialog.Filter = "TXT Files (*.txt*)|*.txt"
-                If saveLayoutDialog.ShowDialog = Windows.Forms.DialogResult.OK _
-                Then
-                    My.Computer.FileSystem.WriteAllText _
-                    (saveLayoutDialog.FileName, theTextToSave, False)
-                End If
-                lblFileName.Text = saveLayoutDialog.FileName
-            ElseIf result = DialogResult.Yes Then
-                My.Computer.FileSystem.WriteAllText _
-                (fileText, theTextToSave, False)
-            End If
+        saveLayoutDialog.Filter = "TXT Files (*.txt*)|*.txt"
+        If saveLayoutDialog.ShowDialog = Windows.Forms.DialogResult.OK Then
+            Dim layoutData As New LayoutFileManager.LayoutData()
+            layoutData.Departments = department.ToList()
+            layoutData.Areas = areawide.ToList()
+            layoutData.Vector = vector.ToList()
+            layoutData.Bay = bay.ToList()
+            layoutData.DeptIndex = deptIndex.ToList()
+            layoutData.RatioX = ratioForm.ratioX
+            layoutData.RatioY = ratioForm.ratioY
+            layoutFileManager.SaveLayoutFile(saveLayoutDialog.FileName, layoutData)
+            lblFileName.Text = saveLayoutDialog.FileName
         End If
     End Sub
 
     Private Sub open_layout(sender As Object, e As EventArgs)
-        Dim dep, are, vec, row, dIn, rat As Array
-        Dim strFileName() As String
-        Dim tempStr As String = ""
-        Dim arrl As Integer = 0 : Dim thecount As Integer = 0
         openLayoutDialog.Filter = "TXT Files (*.txt*)|*.txt"
         If openLayoutDialog.ShowDialog = DialogResult.OK Then
             lblFileName.Text = openLayoutDialog.FileName
-            strFileName = IO.File.ReadAllLines(openLayoutDialog.FileName)
-            For Each myLine In strFileName '// loop thru Arrays.
-                tempStr = myLine
-                If arrl = 0 Then
-                    department = tempStr.Split(":")
-                    dep = department(1).Split(",")
-                    depNo = dep.Length
-                    For i = 0 To depNo - 1
-                        dept(i + 1) = dep(i)
-                    Next
-                ElseIf arrl = 1 Then
-                    areawide = tempStr.Split(":")
-                    are = areawide(1).Split(",")
-                    For i = 0 To depNo - 1
-                        area(i + 1) = are(i)
-                    Next
-                ElseIf arrl = 2 Then
-                    vector = tempStr.Split(":")
-                    vec = vector(1).Split(",")
-                    thecount = 0
-                    For i = 1 To depNo - 1
-                        For j = 2 To depNo
-                            If i >= j Then
-                                'nothing
-                            Else
-                                thecount += 1
-                            End If
-                        Next
-                    Next
-                ElseIf arrl = 3 Then
-                    bay = tempStr.Split(":")
-                    row = bay(1).Split(",")
-                    c1 = row(0)
-                    c2 = row(1)
-                    c3 = row(2)
-                ElseIf arrl = 4 Then
-                    deptIndex = tempStr.Split(":")
-                    dIn = deptIndex(1).Split(",")
-                    'MessageBox.Show(deptIndex(1))
-                    'For i = 0 To depNo - 1
-                    '    ind(i + 1) = dIn(i)
-                    'Next
-                ElseIf arrl = 5 Then
-                    ratio = tempStr.Split(":")
-                    rat = ratio(1).Split("/")
-                    ratioForm.ratioX = rat(0)
-                    ratioForm.ratioY = rat(1)
-                End If
-                arrl += 1
-            Next
+            Dim layoutData As LayoutFileManager.LayoutData = layoutFileManager.OpenLayoutFile(openLayoutDialog.FileName)
+            department = layoutData.Departments.ToArray()
+            areawide = layoutData.Areas.ToArray()
+            vector = layoutData.Vector.ToArray()
+            bay = layoutData.Bay.ToArray()
+            deptIndex = layoutData.DeptIndex.ToArray()
+            ratioForm.ratioX = layoutData.RatioX
+            ratioForm.ratioY = layoutData.RatioY
+
+            depNo = department.Length
             ReDim Preserve ind(depNo)
             change_pair()
             count_layout()
             layoutPanel.Invalidate()
         End If
     End Sub
-
-    Private Function theTextToSave() As String
-        'department(), areawide(), vector(), bay(), deptIndex()
-        Dim mydep, myare, myvec, mybay, myind As String
-        mydep = arrToStr(department)
-        myare = arrToStr(areawide)
-        myvec = arrToStr(vector)
-        mybay = arrToStr(bay)
-        myind = arrToStr(deptIndex)
-        Dim saveText As String
-        saveText = "dept:" & mydep & vbLf & "area:" & myare & vbLf & "vector:" & myvec & vbLf & "bay:" & mybay & vbLf & "deptIndex:" & myind _
-                   & vbLf & "ratio:" & ratioForm.ratioX & "/" & ratioForm.ratioY
-        Return saveText
-    End Function
-    Private Function arrToStr(theArray As Array)
-        Dim myStr As String : myStr = ""
-        For i = 1 To theArray.Length - 1
-            myStr &= theArray(i) & If(i >= theArray.Length - 1, "", ",")
-        Next
-        Return myStr
-    End Function
 
 End Class

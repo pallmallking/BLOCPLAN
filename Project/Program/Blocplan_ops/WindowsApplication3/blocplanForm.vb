@@ -1,4 +1,5 @@
-﻿
+Imports BlocplanLogic
+
 Public Class formDept
     'Menetapkan variable isian (textbox) untuk nomor, namaDept, area, average, std dev, dan total area
     'Dibuat public shared agar variabel2 tsb (terutama nama dept dan areanya) bisa diakses dari form lainnya
@@ -13,6 +14,9 @@ Public Class formDept
     Private department(), areawide(), vector(), bay(), deptIndex(), ratio() As String
     Private depNo As Integer
     Public Shared vec As Array : Public Shared open_status As Boolean = False
+
+    Private departmentManager As New DepartmentManager()
+    Private layoutFileManager As New LayoutFileManager()
 
     Private Sub Form1_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         'Menetapkan ukurang dari Form dan meletakknya di tengah layar
@@ -106,30 +110,17 @@ Public Class formDept
             MessageBox.Show("Department Name must be filled")
             txtDept(area.Name).Focus()
         End If
-        'Menetapkan variable total, totalSquare(kuadrat), dan std dev semua dimulai dengan nilai 0
-        Dim total, totalSquare, stddev As Double : total = 0 : totalSquare = 0
-        Dim count As Integer : count = 0
-        'Memulai iterasi 18x, untuk tiap kita mengisi area
+
+        Dim areaTexts As New List(Of String)
         For i As Integer = 1 To 18
-            If txtArea(i).Text = "" Then
-                'Nothing -- Tidak melakukan apa2 jika tidak mengisikan apa2 di text area
-            Else
-                'Kalau mengisi, maka nilai total ditambah dengan yang ada di text area tersebut
-                'Fungsi CDbl adalah untuk merobah tipe text menjadi tipe Double(Bilangan desimal itu ada tipe Single/Double)
-                'Tipe Double lebih banyak bilangan digitnya ketimbang Single... Sebenarnya bisa dipakai fungsi CSng()
-                total += CDbl(txtArea(i).Text)
-                'Area tersebut dipangkatkan 2(^2) 
-                totalSquare += CDbl(txtArea(i).Text) ^ 2
-                'Variabel count ini untuk mengetahui berapa kali iterasi telah dilakukan
-                count += 1
-            End If
+            areaTexts.Add(txtArea(i).Text)
         Next
-        'Rumus Standard deviasi
-        stddev = Math.Sqrt((totalSquare - (total * total / count)) / count)
-        'Nilai Total, Avg dan Stddev di rounded 2 angka decimal
-        txtTotal.Text = Math.Round(total, 2)
-        txtAvg.Text = Math.Round(total / count, 2)
-        txtDev.Text = Math.Round(stddev, 2)
+
+        Dim stats As DepartmentManager.DepartmentStatistics = departmentManager.CalculateStatistics(areaTexts)
+
+        txtTotal.Text = stats.Total.ToString()
+        txtAvg.Text = stats.Average.ToString()
+        txtDev.Text = stats.StandardDeviation.ToString()
     End Sub
 
     Private Sub continue_click(sender As Object, e As EventArgs)
@@ -137,72 +128,23 @@ Public Class formDept
     End Sub
 
     Private Sub open_layout(sender As Object, e As EventArgs)
-        Dim dep, are, row, dIn, rat As Array
-        Dim strFileName() As String
-        Dim tempStr As String = ""
-        Dim arrl As Integer = 0 : Dim thecount As Integer = 0
         openLayoutDialog.Filter = "TXT Files (*.txt*)|*.txt"
         If openLayoutDialog.ShowDialog = DialogResult.OK Then
-            'lblFileName.Text = openLayoutDialog.FileName
-            strFileName = IO.File.ReadAllLines(openLayoutDialog.FileName)
-            For Each myLine In strFileName '// loop thru Arrays.
-                tempStr = myLine
-                If arrl = 0 Then
-                    department = tempStr.Split(":")
-                    dep = department(1).Split(",")
-                    depNo = dep.Length
-                    For i = 0 To depNo - 1
-                        txtDept(i + 1).Text = dep(i)
-                    Next
-                ElseIf arrl = 1 Then
-                    areawide = tempStr.Split(":")
-                    are = areawide(1).Split(",")
-                    For i = 0 To depNo - 1
-                        txtArea(i + 1).Text = are(i)
-                    Next
-                ElseIf arrl = 2 Then
-                    vector = tempStr.Split(":")
-                    vec = vector(1).Split(",")
-                    thecount = 0
-                    For i = 1 To depNo - 1
-                        For j = 2 To depNo
-                            If i >= j Then
-                                'nothing
-                            Else
-                                thecount += 1
-                            End If
-                        Next
-                    Next
-                    open_status = True
-                ElseIf arrl = 3 Then
-                    bay = tempStr.Split(":")
-                    row = bay(1).Split(",")
-                    'c1 = row(0)
-                    'c2 = row(1)
-                    'c3 = row(2)
-                ElseIf arrl = 4 Then
-                    deptIndex = tempStr.Split(":")
-                    dIn = deptIndex(1).Split(",")
-                    'MessageBox.Show(deptIndex(1))
-                    'For i = 0 To depNo - 1
-                    '    ind(i + 1) = dIn(i)
-                    'Next
-                ElseIf arrl = 5 Then
-                    ratio = tempStr.Split(":")
-                    rat = ratio(1).Split("/")
-                    ratioForm.ratioX = rat(0)
-                    ratioForm.ratioY = rat(1)
-                End If
-                arrl += 1
+            Dim fileLines As String() = IO.File.ReadAllLines(openLayoutDialog.FileName)
+            Dim layoutData As LayoutFileManager.LayoutData = layoutFileManager.ParseLayoutFile(fileLines)
+
+            depNo = layoutData.Departments.Count
+            For i = 0 To depNo - 1
+                txtDept(i + 1).Text = layoutData.Departments(i)
+                txtArea(i + 1).Text = layoutData.Areas(i)
             Next
-            'ReDim Preserve ind(depNo)
-            'change_pair()
-            'count_layout()
-            'layoutPanel.Invalidate()
+
+            vec = layoutData.Vector.ToArray()
+            open_status = True
+
+            ratioForm.ratioX = layoutData.RatioX
+            ratioForm.ratioY = layoutData.RatioY
         End If
     End Sub
 
 End Class
-
-
-
