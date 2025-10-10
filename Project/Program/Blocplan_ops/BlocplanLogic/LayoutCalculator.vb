@@ -8,11 +8,12 @@ Public Class LayoutCalculator
         Public Property RScore As Single
     End Class
 
-    Public Function CalculateLayout(areas As List(Of Single),-
-                                 ratioX As Single, ratioY As Single,-
-                                 c1 As Integer, c2 As Integer, c3 As Integer,-
-                                 departmentIndices As List(Of Integer),-
-                                 scores As Single(,)) As LayoutResult
+    Public Function CalculateLayout(
+        areas As List(Of Single),
+        ratioX As Single, ratioY As Single,
+        c1 As Integer, c2 As Integer, c3 As Integer,
+        departmentIndices As List(Of Integer),
+        scores As Single(,)) As LayoutResult
         Dim depNo As Integer = areas.Count
         Dim calib As Single = 540 / Math.Sqrt(areas.Sum())
         Dim myWidth As Single = Math.Sqrt((ratioX / ratioY) * areas.Sum())
