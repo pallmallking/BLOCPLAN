@@ -163,7 +163,7 @@ Public Class layoutForm
     End Sub
     Sub count_layout()
         Dim areaList As New List(Of Single)
-        For i = 1 To depNo
+        For i = 0 To depNo - 1
             areaList.Add(area(i))
         Next
 
