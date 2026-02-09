@@ -168,11 +168,12 @@ Public Class layoutForm
         Next
     End Sub
     Sub count_layout()
-        ' Initialize cached collections if needed
-        If cachedAreaList Is Nothing Then
+        ' Initialize or resize cached collections if needed
+        If cachedAreaList Is Nothing OrElse cachedAreaList.Capacity < depNo Then
             cachedAreaList = New List(Of Single)(depNo)
             cachedDepartmentIndices = New List(Of Integer)(depNo)
-            cachedScoreArray = New Single(depNo, depNo) {}
+            ' VB.NET arrays: specify upper bound for each dimension
+            ReDim cachedScoreArray(depNo, depNo)
         End If
         
         ' Reuse lists instead of creating new ones
