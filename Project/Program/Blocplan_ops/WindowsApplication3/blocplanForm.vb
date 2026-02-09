@@ -17,6 +17,8 @@ Public Class formDept
 
     Private departmentManager As New DepartmentManager()
     Private layoutFileManager As New LayoutFileManager()
+    ' Cache area texts list to avoid repeated allocations
+    Private cachedAreaTexts As New List(Of String)(18)
 
     Private Sub Form1_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         'Menetapkan ukurang dari Form dan meletakknya di tengah layar
@@ -111,12 +113,13 @@ Public Class formDept
             txtDept(area.Name).Focus()
         End If
 
-        Dim areaTexts As New List(Of String)
+        ' Reuse cached list instead of creating new one
+        cachedAreaTexts.Clear()
         For i As Integer = 1 To 18
-            areaTexts.Add(txtArea(i).Text)
+            cachedAreaTexts.Add(txtArea(i).Text)
         Next
 
-        Dim stats As DepartmentManager.DepartmentStatistics = departmentManager.CalculateStatistics(areaTexts)
+        Dim stats As DepartmentManager.DepartmentStatistics = departmentManager.CalculateStatistics(cachedAreaTexts)
 
         txtTotal.Text = stats.Total.ToString()
         txtAvg.Text = stats.Average.ToString()

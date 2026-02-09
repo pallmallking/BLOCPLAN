@@ -22,6 +22,12 @@ Public Class layoutForm
 
     Private layoutCalculator As New LayoutCalculator()
     Private layoutFileManager As New LayoutFileManager()
+    ' Cache reusable collections to avoid repeated allocations
+    Private cachedAreaList As List(Of Single)
+    Private cachedDepartmentIndices As List(Of Integer)
+    Private cachedScoreArray As Single(,)
+    ' Reuse Random instance for better performance and randomness
+    Private sharedRandom As New Random()
 
     Private Sub layoutForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         depIdx = 0
@@ -162,26 +168,35 @@ Public Class layoutForm
         Next
     End Sub
     Sub count_layout()
-        Dim areaList As New List(Of Single)
+        ' Initialize or resize cached collections if needed
+        If cachedAreaList Is Nothing OrElse cachedAreaList.Capacity < depNo Then
+            cachedAreaList = New List(Of Single)(depNo)
+            cachedDepartmentIndices = New List(Of Integer)(depNo)
+            ' VB.NET arrays: specify upper bound for each dimension
+            ReDim cachedScoreArray(depNo, depNo)
+        End If
+        
+        ' Reuse lists instead of creating new ones
+        cachedAreaList.Clear()
         For i = 0 To depNo - 1
-            areaList.Add(area(i))
+            cachedAreaList.Add(area(i))
         Next
 
-        Dim departmentIndices As New List(Of Integer)
+        cachedDepartmentIndices.Clear()
         For i = 1 To depNo
-            departmentIndices.Add(ind(i))
+            cachedDepartmentIndices.Add(ind(i))
         Next
 
-        Dim scoreArray As Single(,) = New Single(depNo, depNo) {}
+        ' Populate score array
         For i = 1 To depNo - 1
             For j = 2 To depNo
                 If i < j Then
-                    scoreArray(i, j) = score(i, j)
+                    cachedScoreArray(i, j) = score(i, j)
                 End If
             Next
         Next
 
-        Dim result As LayoutCalculator.LayoutResult = layoutCalculator.CalculateLayout(areaList, CSng(ratioForm.ratioX), CSng(ratioForm.ratioY), c1, c2, c3, departmentIndices, scoreArray)
+        Dim result As LayoutCalculator.LayoutResult = layoutCalculator.CalculateLayout(cachedAreaList, CSng(ratioForm.ratioX), CSng(ratioForm.ratioY), c1, c2, c3, cachedDepartmentIndices, cachedScoreArray)
 
         x = result.XCoordinates
         y = result.YCoordinates
@@ -268,10 +283,10 @@ Public Class layoutForm
         ind(elm2) = chgTemp
     End Sub
     Sub change_randomDeptId()
-        Dim rndId As New Random
+        ' Use shared Random instance instead of creating new one
         For i = 1 To depNo
-            Dim elm1 As Integer = rndId.Next(1, depNo)
-            Dim elm2 As Integer = rndId.Next(1, depNo)
+            Dim elm1 As Integer = sharedRandom.Next(1, depNo)
+            Dim elm2 As Integer = sharedRandom.Next(1, depNo)
             chgTemp = ind(elm1)
             ind(elm1) = ind(elm2)
             ind(elm2) = chgTemp
